@@ -60,9 +60,10 @@ class Record:
         if not phone:
             raise ValueError(f"Phone number {phone_number_old} not found.")
         # Створюємо новий об'єкт Phone для валідації нового номера
-        phone.value = phone_number_new
-        # index = self.phones.index(phone)
-        # self.phones[index] = Phone(phone_number_new)
+        new_phone = Phone(phone_number_new)
+        index = self.phones.index(phone)
+        self.phones[index] = new_phone
+        
 
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
@@ -99,9 +100,16 @@ class AddressBook(UserDict):
                     birthday_this_year = birthday_this_year.replace(year=today.year + 1)
 
                 days_until_birthday = (birthday_this_year - today).days
-
+                print (birthday_this_year)
                 if 0 <= days_until_birthday <= 7:
-                    upcoming_birthdays.append({"Name": record.name.value, "birthday": birthday_this_year.strftime('%d.%m.%Y')})
+                    if birthday_this_year.weekday() == 5:  
+                        greeting_date = birthday_this_year + timedelta(days=2)
+                    elif birthday_this_year.weekday() == 6:  # неділя
+                        greeting_date = birthday_this_year + timedelta(days=1)
+                    else:
+                        greeting_date = birthday_this_year
+
+                    upcoming_birthdays.append({"Name": record.name.value, "birthday": greeting_date.strftime('%d.%m.%Y')})
 
         return f"Birthdays in next 7 days: {upcoming_birthdays}" if upcoming_birthdays else "No upcoming birthdays."
 
